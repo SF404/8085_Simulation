@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Assembly Language IDE</title>
+    <link rel="stylesheet" href="codemirror-5.65.14/lib/codemirror.css" />
+    <link rel="stylesheet" href="codemirror-5.65.14/theme/dracula.css" />
+    <!-- <script src="codemirror-5.65.14/mode/xml/xml.js"></script> -->
+    <script src="codemirror-5.65.14/addon/edit/"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+    <!-- Replace with your preferred theme -->
+  </head>
+
+  <body>
+    <div class="internal_memory">
+      <div class="inner">
+        <div class="reg">
+          Register
+          <div>
+            A <span><p id="A">00</p></span>
+          </div>
+          <div>
+            BC
+            <span
+              ><p id="B">00</p>
+              <p id="C">00</p></span
+            >
+          </div>
+          <div>
+            DE
+            <span
+              ><p id="D">00</p>
+              <p id="E">00</p></span
+            >
+          </div>
+          <div>
+            HL
+            <span
+              ><p id="H">00</p>
+              <p id="L">00</p></span
+            >
+          </div>
+          <div>
+            PSW
+            <span
+              ><p id="P">00</p>
+              <p id="S">00</p></span
+            >
+          </div>
+          <div>
+            PC
+            <span
+              ><p id="P">00</p>
+              <p id="C">00</p></span
+            >
+          </div>
+          <div>
+            SP
+            <span
+              ><p id="S">00</p>
+              <p id="P">00</p></span
+            >
+          </div>
+          <div>
+            Int-Reg <span><p id="Int">00</p></span>
+          </div>
+        </div>
+        <div class="flag">
+          Flag
+          <div>
+            S
+            <p>0</p>
+          </div>
+          <div>
+            Z
+            <p>0</p>
+          </div>
+          <div>
+            AC
+            <p>0</p>
+          </div>
+          <div>
+            P
+            <p>0</p>
+          </div>
+          <div>
+            C
+            <p>0</p>
+          </div>
+        </div>
+      </div>
+      <div class="outer">
+        <div class="conv" id="conv1">
+          <p>Decimal</p>
+          <p>Hex</p>
+          <input type="text" value="0" id="decimal" />
+          <input type="text" value="0" id="hex" />
+          <input type="button" value="To HEX" onclick="decimalToHex()" />
+          <input type="button" value="To DEC" onclick="hexToDecimal()" />
+        </div>
+        <div class="conv" id="conv2">
+          <p id="name">Memory</p>
+          <p>Address</p>
+          <p>Data</p>
+          <input type="text" value="0" id="address" />
+          <input type="text" value="0" id="value" />
+          <input type="button" value="Update Value" onclick="updateData()" />
+          <select id="dropdown" name="dropdown" onchange="updateName()">
+            <option value="Mem">Memory</option>
+            <option value="io">I/O</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="mid" style="min-height: 100vh; width: 100%">
+      <div class="Output"></div>
+      <div class="editor-setting">
+        <span class="material-symbols-outlined" id="compile">
+          check_circle
+        </span>
+        <span class="material-symbols-outlined" onclick="zoomin()"
+          >zoom_in</span
+        >
+        <span class="material-symbols-outlined" onclick="zoomout()"
+          >zoom_out</span
+        >
+      </div>
+      <textarea id="editor">LXI A,5676h</textarea>
+    </div>
+    <div class="external_memory">
+      <div class="memory">
+        <!-- <div class="memoryin">Memory display</div> -->
+
+        <div class="memoryin">
+          <!-- <input type="number" value="00" id="decimal" />
+          <input type="button" value="OK" onclick="ok()" /> -->
+          <div class="addr">
+            <p>Address(Hex)</p>
+            <p>Address</p>
+            <p>Data</p>
+          </div>
+          <div class="cont" id="scroll_mem"></div>
+        </div>
+      </div>
+      <div class="io">
+        <div class="ioin">
+          <div class="addr">
+            <p>Address(Hex)</p>
+            <p>Address</p>
+            <p>Data</p>
+          </div>
+          <div class="cont" id="scroll_io"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="codemirror-5.65.14/lib/codemirror.js"></script>
+
+    <script src="/codemirror-5.65.14/mode/assembly/assembly.js"></script>
+    <script type="module" src="script.js"></script>
+  </body>
+  <script src="/controllers/conversion.js"></script>
+  <script>
+    const code_editor = document.querySelector(".CodeMirror");
+    function zoomin() {
+      code_editor.style.fontSize =
+        parseInt(getComputedStyle(code_editor).fontSize) + 1 + "px";
+    }
+    function zoomout() {
+      code_editor.style.fontSize =
+        parseInt(getComputedStyle(code_editor).fontSize) - 1 + "px";
+    }
+  </script>
+</html>
