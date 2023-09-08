@@ -10,7 +10,7 @@ export function tokenizeAndCompile(line) {
 
   switch (inst) {
     // Data Transfer
-    case "mov":
+    case "mov": //MOV A,B
       comp = onebyte(operand);
       break;
     case "add": //Arithematic Inputs
@@ -19,7 +19,7 @@ export function tokenizeAndCompile(line) {
     case "dcr":
     case "ana": //Logic Bit Manupulation Inst
     case "ora":
-    case "xra":
+    case "xra": //ADD C
       comp = onebyteNoReg(operand);
       break;
     case "adi": //Arithematic Inputs
@@ -28,13 +28,13 @@ export function tokenizeAndCompile(line) {
     case "ori":
     case "xri":
     case "out":
-    case "in":
+    case "in": //ADI 34h
       comp = multibyteNoReg(operand, 1);
       break;
-    case "mvi":
+    case "mvi": //MVI A,34h
       comp = multibyte(operand, 1);
       break;
-    case "lxi":
+    case "lxi": //LXI A,3456h
       comp = multibyte(operand, 2);
       break;
     case "lda":
@@ -46,13 +46,13 @@ export function tokenizeAndCompile(line) {
     case "jnz":
     case "jp":
     case "jn":
-    case "call":
+    case "call": //LDA 3423h
       comp = multibyteNoReg(operand, 2);
       break;
     case "ldax":
     case "stax":
     case "inx": //Arithematic Inputs
-    case "dcx":
+    case "dcx": //inx M
       comp = regPair(operand);
       break;
     case "rlc": //Compare inst
