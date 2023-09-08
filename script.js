@@ -9,17 +9,23 @@ var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
   autoCloseBrackets: true, // Automatically close brackets
 });
 document.getElementById("compile").addEventListener("click", function () {
+  let index = 100;
   const assemblyCode = editor.getValue().split("\n");
   const outputDiv = document.querySelector(".Output");
   outputDiv.innerHTML = "";
   for (let i = 0; i < assemblyCode.length; i++) {
     const line = assemblyCode[i];
-    const result = tokenizeAndCompile(line);
+    const result = tokenizeAndCompile(line, index);
 
     const machineCode = result.machineCode;
-    outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
+    if (result.success) {
+      console.log(index);
+      index += machineCode;
+      outputDiv.innerHTML += `<p>Line ${
+        i + 1
+      }: "Instructions are stored from memory address 0x0064"</p>`;
+    } else outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
   }
-  //compile true
 });
 
 function appendAddressElement(container, hexAddress, k) {
