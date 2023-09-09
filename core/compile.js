@@ -1,6 +1,6 @@
 let index;
 let opc = "tmp";
-export function tokenizeAndCompile(line, index) {
+function tokenizeAndCompile(line, index) {
   k(index);
   const [instruction, ...operandArray] = line.trim().split(/\s+/);
   const operand = operandArray.join(" ").replace(/\s+/g, "");

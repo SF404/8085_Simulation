@@ -47,22 +47,22 @@
           <div>
             PSW
             <span
-              ><p id="P">00</p>
+              ><p id="PW">00</p>
               <p id="S">00</p></span
             >
           </div>
           <div>
             PC
             <span
-              ><p id="P">00</p>
-              <p id="C">00</p></span
+              ><p id="Pgr">00</p>
+              <p id="Ctr">00</p></span
             >
           </div>
           <div>
             SP
             <span
-              ><p id="S">00</p>
-              <p id="P">00</p></span
+              ><p id="Stk">00</p>
+              <p id="Ptr">00</p></span
             >
           </div>
           <div>
@@ -73,23 +73,23 @@
           Flag
           <div>
             S
-            <p>0</p>
+            <p id="S_flag">0</p>
           </div>
           <div>
             Z
-            <p>0</p>
+            <p id="Z_flag">0</p>
           </div>
           <div>
             AC
-            <p>0</p>
+            <p id="AC_flag">0</p>
           </div>
           <div>
             P
-            <p>0</p>
+            <p id="P_flag">0</p>
           </div>
           <div>
             C
-            <p>0</p>
+            <p id="C_flag">0</p>
           </div>
         </div>
       </div>
@@ -119,9 +119,11 @@
     <div class="mid" style="min-height: 100vh; width: 100%">
       <div class="Output"></div>
       <div class="editor-setting">
+        <span class="material-symbols-outlined" id="run">done</span>
         <span class="material-symbols-outlined" id="compile">
           check_circle
         </span>
+
         <span class="material-symbols-outlined" onclick="zoomin()"
           >zoom_in</span
         >
@@ -129,7 +131,7 @@
           >zoom_out</span
         >
       </div>
-      <textarea id="editor">LXI A,5676h</textarea>
+      <textarea id="editor">mvi A,59h</textarea>
     </div>
     <div class="external_memory">
       <div class="memory">
@@ -157,7 +159,9 @@
     <script src="codemirror-5.65.14/lib/codemirror.js"></script>
 
     <script src="/codemirror-5.65.14/mode/assembly/assembly.js"></script>
-    <script type="module" src="script.js"></script>
+    <script src="/core/alu.js"></script>
+    <script src="core/compile.js"></script>
+    <script src="script.js"></script>
   </body>
   <script src="/controllers/conversion.js"></script>
   <script>
