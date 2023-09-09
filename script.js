@@ -9,7 +9,10 @@ var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
   matchBrackets: true, // Highlight matching brackets
   autoCloseBrackets: true, // Automatically close brackets
 });
+const Sdata = localStorage.getItem("code");
+if (Sdata !== null) editor.setValue(Sdata);
 document.getElementById("compile").addEventListener("click", function () {
+  localStorage.setItem("code", editor.getValue());
   let index = 100;
   const assemblyCode = editor.getValue().split("\n");
   const outputDiv = document.querySelector(".Output");
@@ -23,7 +26,13 @@ document.getElementById("compile").addEventListener("click", function () {
       outputDiv.innerHTML += `<p>Line ${
         i + 1
       }: "Instructions are stored from memory address 0x0064"</p>`;
-    } else outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
+      document.getElementById("compile").style.display = "none";
+      document.getElementById("run").style.display = "inline-block";
+    } else {
+      outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
+      document.getElementById("compile").style.display = "inline-block";
+      document.getElementById("run").style.display = "none";
+    }
   }
 });
 document.getElementById("run").addEventListener("click", function () {
@@ -32,15 +41,14 @@ document.getElementById("run").addEventListener("click", function () {
   // outputDiv.innerHTML = "";
   for (let i = 0; i < assemblyCode.length; i++) {
     const line = assemblyCode[i];
-    const result = opcodeFetch(line);
-    // const machineCode = result.machineCode;
-    // if (result.success) {
-    //   console.log(index);
-    //   index += machineCode;
-    //   outputDiv.innerHTML += `<p>Line ${
-    //     i + 1
-    //   }: "Instructions are stored from memory address 0x0064"</p>`;
-    // } else outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
+    if (opcodeFetch(line)) {
+      document.getElementById("compile").style.display = "inline-block";
+      document.getElementById("run").style.display = "none";
+    } else {
+      console.log("execution failed");
+      document.getElementById("compile").style.display = "none";
+      document.getElementById("run").style.display = "inline-block";
+    }
   }
 });
 

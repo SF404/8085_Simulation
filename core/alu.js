@@ -21,7 +21,7 @@ let Int = $("Int");
 //flag
 let S_flag = $("S_flag");
 let Z_flag = $("Z_flag");
-let p_flag = $("p_flag");
+let P_flag = $("P_flag");
 let C_flag = $("C_flag");
 let AC_flag = $("AC_flag");
 
@@ -111,9 +111,6 @@ function opcodeFetch(line) {
     case "jp":
       jp(operandsArray);
       break;
-    case "jn":
-      jn(operandsArray);
-      break;
     case "call": //LDA 3423h
       call(operandsArray);
       break;
@@ -158,79 +155,343 @@ function opcodeFetch(line) {
 
 function mov(operandsArray) {} //MOV A,B
 
-function add(operandsArray) {} //Arithematic Inputs
+function add(operandsArray) {
+  // let k;
+  if (operandsArray[0] == "M") {
+    const rp = H.innerHTML + L.innerHTML;
+    const dec = parseInt(rp, 16);
+    const p3 = document.querySelector(`.me${dec}`);
+    k = p3.textContent;
+  } else k = $(operandsArray[0]).innerHTML;
+  console.log(parseInt(A.innerHTML, 16));
+  const val1 = parseInt(k, 16);
+  const val2 = parseInt(A.innerHTML, 16);
+  console.log(k);
+  A.innerHTML = (val1 + val2).toString(16).toUpperCase();
+} //Arithematic Inputs
 
-function sub(operandsArray) {}
+function sub(operandsArray) {
+  let k;
+  if (operandsArray[0] == "M") {
+    const rp = H.innerHTML + L.innerHTML;
+    const dec = parseInt(rp, 16);
+    const p3 = document.querySelector(`.me${dec}`);
+    k = p3.textContent;
+  } else k = $(operandsArray[0]).innerHTML;
+  const val1 = parseInt(k, 16);
+  const val2 = parseInt(A.innerHTML, 16);
+  A.innerHTML = (val1 - val2).toString(16).toUpperCase();
+}
 
-function inr(operandsArray) {}
+function inr(operandsArray) {
+  if (operandsArray[0] == "M") {
+    const rp = H.innerHTML + L.innerHTML;
+    const dec = parseInt(rp, 16);
+    const p3 = document.querySelector(`.me${dec}`);
+    const incrementedValue = parseInt(p3.textContent, 16) + 1;
 
-function dcr(operandsArray) {}
+    p3.textContent = incrementedValue.toString(16).toUpperCase();
+  } else {
+    const incrementedValue = parseInt($(operandsArray[0]).innerHTML, 16) + 1;
+    console.log(incrementedValue.toString(16));
 
-function ana(operandsArray) {} //Logic Bit Manupulation Inst
+    $(operandsArray[0]).innerHTML = incrementedValue.toString(16).toUpperCase();
+  }
+}
 
-function ora(operandsArray) {}
+function dcr(operandsArray) {
+  if (operandsArray[0] == "M") {
+    const rp = H.innerHTML + L.innerHTML;
+    const dec = parseInt(rp, 16);
+    const p3 = document.querySelector(`.me${dec}`);
+    const incrementedValue = parseInt(p3.textContent, 16) + 1;
 
-function xra(operandsArray) {} //ADD C
+    p3.textContent = incrementedValue.toString(16).toUpperCase();
+  } else {
+    const incrementedValue = parseInt($(operandsArray[0]).innerHTML, 16) - 1;
+    console.log(incrementedValue.toString(16));
 
-function adi(operandsArray) {} //Arithematic Inputs
+    $(operandsArray[0]).innerHTML = incrementedValue.toString(16).toUpperCase();
+  }
+}
 
-function sui(operandsArray) {}
+function ana(operandsArray) {
+  let k;
+  if (operandsArray[0] == "M") {
+    const rp = H.innerHTML + L.innerHTML;
+    const dec = parseInt(rp, 16);
+    const p3 = document.querySelector(`.me${dec}`);
+    k = p3.textContent;
+  } else k = $(operandsArray[0]).innerHTML;
+  const val1 = parseInt(k, 16);
+  const val2 = parseInt(A.innerHTML, 16);
+  A.innerHTML = (val1 & val2).toString(16).toUpperCase();
+} //Logic Bit Manupulation Inst
 
-function ani(operandsArray) {} //Logic Bit Manupulation Inst
+function ora(operandsArray) {
+  let k;
+  if (operandsArray[0] == "M") {
+    const rp = H.innerHTML + L.innerHTML;
+    const dec = parseInt(rp, 16);
+    const p3 = document.querySelector(`.me${dec}`);
+    k = p3.textContent;
+  } else k = $(operandsArray[0]).innerHTML;
+  const val1 = parseInt(k, 16);
+  const val2 = parseInt(A.innerHTML, 16);
+  A.innerHTML = (val1 | val2).toString(16).toUpperCase();
+}
 
-function ori(operandsArray) {}
+function xra(operandsArray) {
+  let k;
+  if (operandsArray[0] == "M") {
+    const rp = H.innerHTML + L.innerHTML;
+    const dec = parseInt(rp, 16);
+    const p3 = document.querySelector(`.me${dec}`);
+    k = p3.textContent;
+  } else k = $(operandsArray[0]).innerHTML;
+  const val1 = parseInt(k, 16);
+  const val2 = parseInt(A.innerHTML, 16);
+  A.innerHTML = (val1 ^ val2).toString(16).toUpperCase();
+} //ADD C
 
-function xri(operandsArray) {}
+function adi(operandsArray) {
+  const val1 = parseInt(operandsArray[0], 16);
+  const val2 = parseInt(A.innerHTML, 16);
+  A.innerHTML = (val1 + val2).toString(16).toUpperCase();
+} //Arithematic Inputs
 
-function out(operandsArray) {}
+function sui(operandsArray) {
+  const val1 = parseInt(operandsArray[0], 16);
+  const val2 = parseInt(A.innerHTML, 16);
+  A.innerHTML = (val1 - val2).toString(16).toUpperCase();
+}
 
-function in_(operandsArray) {} //ADI 34h
+function ani(operandsArray) {
+  const val1 = parseInt(operandsArray[0], 16);
+  const val2 = parseInt(A.innerHTML, 16);
+  A.innerHTML = (val1 & val2).toString(16).toUpperCase();
+} //Logic Bit Manupulation Inst
+
+function ori(operandsArray) {
+  const val1 = parseInt(operandsArray[0], 16);
+  const val2 = parseInt(A.innerHTML, 16);
+  A.innerHTML = (val1 | val2).toString(16).toUpperCase();
+}
+
+function xri(operandsArray) {
+  const val1 = parseInt(operandsArray[0], 16);
+  const val2 = parseInt(A.innerHTML, 16);
+  A.innerHTML = (val1 ^ val2).toString(16).toUpperCase();
+}
+
+function out(operandsArray) {
+  const dec = parseInt(operandsArray[0], 16);
+  const p3 = document.querySelector(`.io${dec}`);
+  p3.textContent = A.innerHTML;
+}
+
+function in_(operandsArray) {
+  const dec = parseInt(operandsArray[0], 16);
+  const p3 = document.querySelector(`.io${dec}`);
+  A.innerHTML = p3.textContent;
+} //ADI 34h
 
 function mvi(operandsArray) {
-  console.log(operandsArray);
+  console.log($(operandsArray[0]));
+  $(operandsArray[0]).innerHTML = operandsArray[1].substring(0, 2);
 }
 
 function lxi(operandsArray) {
-  console.log("working");
+  const dec = parseInt(operandsArray[0], 16);
+  const p3 = document.querySelector(`.me${dec}`);
+  value = p3.textContent.padStart(4, "0");
+  switch (operandsArray[0]) {
+    case "B":
+      B.innerHTML = value.substring(3, 4);
+      C.innerHTML = value.substring(0, 2);
+      break;
+    case "D":
+      D.innerHTML = value.substring(3, 4);
+      E.innerHTML = value.substring(0, 2);
+      break;
+    case "H":
+    case "M":
+      H.innerHTML = value.substring(3, 4);
+      L.innerHTML = value.substring(0, 2);
+      break;
+  }
 }
-function lda(operandsArray) {}
+function lda(operandsArray) {
+  const dec = parseInt(operandsArray[0], 16);
+  const p3 = document.querySelector(`.me${dec}`);
+  A.innerHTML = p3.textContent;
+}
 
-function sta(operandsArray) {}
+function sta(operandsArray) {
+  const dec = parseInt(operandsArray[0], 16);
+  const p3 = document.querySelector(`.me${dec}`);
+  p3.textContent = A.innerHTML;
+}
 
 function jmp(operandsArray) {} //Branch inst
 
-function jc(operandsArray) {}
+function jc(operandsArray) {
+  if (C_flag.innerHTML == 1) jmp(operandsArray);
+}
 
-function jnc(operandsArray) {}
+function jnc(operandsArray) {
+  if (C_flag.innerHTML == 1) jmp(operandsArray);
+}
 
-function jz(operandsArray) {}
+function jz(operandsArray) {
+  if (Z_flag.innerHTML == 1) jmp(operandsArray);
+}
 
-function jnz(operandsArray) {}
+function jnz(operandsArray) {
+  if (Z_flag.innerHTML == 0) jmp(operandsArray);
+}
 
-function jp(operandsArray) {}
-
-function jn(operandsArray) {}
+function jp(operandsArray) {
+  if (P_flag.innerHTML == 1) jmp(operandsArray);
+}
 
 function call(operandsArray) {} //LDA 3423h
 
-function ldax(operandsArray) {}
+function ldax(operandsArray) {
+  let rp;
+  switch (operandsArray[0]) {
+    case "B":
+      rp = B.innerHTML + C.innerHTML;
+      break;
+    case "D":
+      rp = D.innerHTML + E.innerHTML;
+      break;
+    case "H":
+    case "M":
+      rp = H.innerHTML + L.innerHTML;
+      break;
+  }
+  const dec = parseInt(rp, 16);
+  const p3 = document.querySelector(`.me${dec}`);
+  A.innerHTML = p3.textContent;
+}
 
-function stax(operandsArray) {}
+function stax(operandsArray) {
+  let rp;
+  switch (operandsArray[0]) {
+    case "B":
+      rp = B.innerHTML + C.innerHTML;
+      break;
+    case "D":
+      rp = D.innerHTML + E.innerHTML;
+      break;
+    case "H":
+    case "M":
+      rp = H.innerHTML + L.innerHTML;
+      break;
+  }
+  const dec = parseInt(rp, 16);
+  const p3 = document.querySelector(`.me${dec}`);
+  console.log(dec);
+  p3.textContent = A.innerHTML;
+}
 
-function inx(operandsArray) {} //Arithematic Inputs
+function inx(operandsArray) {
+  let temp;
+  switch (operandsArray[0]) {
+    case "B":
+      temp = C;
+      break;
+    case "D":
+      temp = E;
+      break;
+    case "H":
+    case "M":
+      temp = L;
+      break;
+  }
+  console.log(temp.innerHTML);
+  const incrementedValue = parseInt(temp.innerHTML, 16) + 1;
+  temp.innerHTML = incrementedValue.toString(16).toUpperCase();
+} //Arithematic Inputs
 
-function dcx(operandsArray) {}
+function dcx(operandsArray) {
+  let temp;
+  switch (operandsArray[0]) {
+    case "B":
+      temp = C;
+      break;
+    case "D":
+      temp = E;
+      break;
+    case "H":
+    case "M":
+      temp = L;
+      break;
+  }
+  console.log(temp.innerHTML);
+  const incrementedValue = parseInt(temp.innerHTML, 16) - 1;
+  temp.innerHTML = incrementedValue.toString(16).toUpperCase();
+}
 
-function rlc() {}
+function rlc() {
+  const binaryNumber = decimalToBinary(parseInt(A.innerHTML, 16));
+  const bits = binaryNumber.split("").map(Number);
+  const shiftedOutBit = bits[0];
+  for (let i = 0; i < bits.length - 1; i++) bits[i] = bits[i + 1];
+  bits[bits.length - 1] = shiftedOutBit;
+  const resultBinary = bits.join("");
+  C_flag.innerHTML = shiftedOutBit;
+  console.log(binaryNumber, resultBinary);
+  A.innerHTML = binaryToDecimal(resultBinary).toString(16).toUpperCase();
+}
 
-function rrc() {}
+function rrc() {
+  const binaryNumber = decimalToBinary(parseInt(A.innerHTML, 16));
+  const bits = binaryNumber.split("").map(Number);
+  const shiftedOutBit = bits[bits.length - 1];
+  for (let i = bits.length - 1; i >= 0; i--) bits[i] = bits[i - 1];
+  bits[0] = shiftedOutBit;
+  C_flag.innerHTML = shiftedOutBit;
+  const resultBinary = bits.join("");
+  console.log(binaryNumber, resultBinary);
+  A.innerHTML = binaryToDecimal(resultBinary).toString(16).toUpperCase();
+}
 
-function ral() {}
+function ral() {
+  const binaryNumber = decimalToBinary(parseInt(A.innerHTML, 16));
+  const bits = binaryNumber.split("").map(Number);
+  const shiftedOutBit = bits[0];
+  for (let i = 0; i < bits.length - 1; i++) bits[i] = bits[i + 1];
+  bits[bits.length - 1] = C_flag.innerHTML;
+  C_flag.innerHTML = shiftedOutBit;
+  const resultBinary = bits.join("");
+  console.log(binaryNumber, resultBinary);
+  A.innerHTML = binaryToDecimal(resultBinary).toString(16).toUpperCase();
+}
 
-function rar() {}
+function rar() {
+  const binaryNumber = decimalToBinary(parseInt(A.innerHTML, 16));
+  const bits = binaryNumber.split("").map(Number);
+  const shiftedOutBit = bits[bits.length - 1];
+  for (let i = bits.length - 1; i >= 0; i--) bits[i] = bits[i - 1];
+  bits[0] = C_flag.innerHTML;
+  C_flag.innerHTML = shiftedOutBit;
+  const resultBinary = bits.join("");
+  console.log(binaryNumber, resultBinary);
+  A.innerHTML = binaryToDecimal(resultBinary).toString(16).toUpperCase();
+}
 
 function hlt() {}
 
 function nop() {}
 
 function return_() {}
+
+function decimalToBinary(decimalNumber) {
+  return (decimalNumber >>> 0).toString(2).padStart(8, "0");
+}
+
+function binaryToDecimal(binaryNumber) {
+  return parseInt(binaryNumber, 2);
+}

@@ -12,7 +12,7 @@ function tokenizeAndCompile(line, index) {
   switch (inst) {
     // Data Transfer
     case "mov": //MOV A,B
-      $();
+      $s();
       comp = onebyte(operand);
       break;
     case "add": //Arithematic Inputs
@@ -22,7 +22,7 @@ function tokenizeAndCompile(line, index) {
     case "ana": //Logic Bit Manupulation Inst
     case "ora":
     case "xra": //ADD C
-      $();
+      $s();
       comp = onebyteNoReg(operand);
       break;
     case "adi": //Arithematic Inputs
@@ -32,15 +32,15 @@ function tokenizeAndCompile(line, index) {
     case "xri":
     case "out":
     case "in": //ADI 34h
-      $();
+      $s();
       comp = multibyteNoReg(operand, 1);
       break;
     case "mvi": //MVI A,34h
-      $();
+      $s();
       comp = multibyte(operand, 1);
       break;
     case "lxi": //LXI A,3456h
-      $();
+      $s();
       comp = multibyte(operand, 2);
       break;
     case "lda":
@@ -51,16 +51,15 @@ function tokenizeAndCompile(line, index) {
     case "jz":
     case "jnz":
     case "jp":
-    case "jn":
     case "call": //LDA 3423h
-      $();
+      $s();
       comp = multibyteNoReg(operand, 2);
       break;
     case "ldax":
     case "stax":
     case "inx": //Arithematic Inputs
     case "dcx": //inx M
-      $();
+      $s();
       comp = regPair(operand);
       break;
     case "rlc": //Compare inst
@@ -70,7 +69,7 @@ function tokenizeAndCompile(line, index) {
     case "hlt": //Machine Ctrl Inst
     case "nop":
     case "return":
-      $();
+      $s();
       comp = !operand.length
         ? { success: true, machineCode: 1 }
         : { success: false, machineCode: "Must have empty Operand" };
@@ -151,21 +150,21 @@ function tokenizeAndCompile(line, index) {
     const hexPattern =
       num === 2 ? /^(0x)?[0-9A-Fa-f]{1,4}h$/ : /^[0-9A-Fa-f]{2}h$/;
     if (hexPattern.test(inputString) && inputString.length === 5 && num === 2) {
-      $(parseInt(inputString.substring(2, 4)));
-      $(parseInt(inputString.substring(0, 2)));
+      $s(parseInt(inputString.substring(2, 4)));
+      $s(parseInt(inputString.substring(0, 2)));
       return true;
     } else if (
       hexPattern.test(inputString) &&
       inputString.length === 3 &&
       num === 1
     ) {
-      $(parseInt(inputString.substring(0, 2)));
+      $s(parseInt(inputString.substring(0, 2)));
       return true;
     }
     return false;
   }
 }
-function $(data = false) {
+function $s(data = false) {
   const p3 = document.querySelector(`.me${index}`);
   p3.textContent = !data ? opc : data;
   index++;
