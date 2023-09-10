@@ -79,3 +79,20 @@ for (let i = 0; i < 4096; i++) {
   appendAddressElement(container1, hexAddress, "me");
   appendAddressElement(container2, hexAddress, "io");
 }
+
+const close_model_button= document.querySelector('.close_model');
+close_model_button.addEventListener('click', ()=>{
+  const model = document.getElementById("model");
+  model.classList.add("hide");
+})
+
+
+
+function loadHelp(){
+  const model = document.getElementById("model");
+  model.classList.remove("hide");
+}
+
+function resetAll(){
+  window.location.reload();
+}

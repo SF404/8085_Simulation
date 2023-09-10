@@ -93,6 +93,22 @@ function tokenizeAndCompile(line, index) {
     } else return { success: false, machineCode: "Register Not Found" };
   }
 
+  function onebyte(operand) {
+    const operandsArray = operand.split(",");
+
+    const isValid =
+      operandsArray.every((item) => Register.includes(item.trim())) ||
+      operandsArray[0] === "M" ||
+      operandsArray[1] === "M";
+    if (operandsArray.length !== 2) {
+      return { success: false, machineCode: "There Must be two Register" };
+    }
+    console.log(operandsArray);
+    if (isValid) {
+      return { success: true, machineCode: 2 };
+    } else return { success: false, machineCode: "Register Not Found" };
+  }
+
   function multibyte(operand, hexByte) {
     const operandArray = operand.split(",");
     if (operandArray.length !== 2)
