@@ -1,7 +1,4 @@
-let index;
-let opc = "tmp";
-function tokenizeAndCompile(line, index) {
-  k(index);
+function tokenizeAndCompile(line) {
   const [instruction, ...operandArray] = line.trim().split(/\s+/);
   const operand = operandArray.join(" ").replace(/\s+/g, "");
   const Register = ["A", "B", "C", "D", "E", "H", "L"];
@@ -12,7 +9,7 @@ function tokenizeAndCompile(line, index) {
   switch (inst) {
     // Data Transfer
     case "mov": //MOV A,B
-      $s();
+      $s(inst);
       comp = onebyte(operand);
       break;
     case "add": //Arithematic Inputs
@@ -22,7 +19,7 @@ function tokenizeAndCompile(line, index) {
     case "ana": //Logic Bit Manupulation Inst
     case "ora":
     case "xra": //ADD C
-      $s();
+      $s(inst);
       comp = onebyteNoReg(operand);
       break;
     case "adi": //Arithematic Inputs
@@ -32,34 +29,37 @@ function tokenizeAndCompile(line, index) {
     case "xri":
     case "out":
     case "in": //ADI 34h
-      $s();
+      $s(inst);
       comp = multibyteNoReg(operand, 1);
       break;
     case "mvi": //MVI A,34h
-      $s();
+      $s(inst);
       comp = multibyte(operand, 1);
       break;
     case "lxi": //LXI A,3456h
-      $s();
+      $s(inst);
       comp = multibyte(operand, 2);
       break;
-    case "lda":
-    case "sta":
     case "jmp": //Branch inst
     case "jc":
     case "jnc":
     case "jz":
     case "jnz":
     case "jp":
+      // $s(inst);
+      comp = label(operand);
+      break;
+    case "lda":
+    case "sta":
     case "call": //LDA 3423h
-      $s();
+      $s(inst);
       comp = multibyteNoReg(operand, 2);
       break;
     case "ldax":
     case "stax":
     case "inx": //Arithematic Inputs
     case "dcx": //inx M
-      $s();
+      $s(inst);
       comp = regPair(operand);
       break;
     case "rlc": //Compare inst
@@ -69,22 +69,59 @@ function tokenizeAndCompile(line, index) {
     case "hlt": //Machine Ctrl Inst
     case "nop":
     case "return":
-      $s();
+      $s(inst);
       comp = !operand.length
         ? { success: true, machineCode: 1 }
         : { success: false, machineCode: "Must have empty Operand" };
       break;
     default:
-      comp = { success: false, machineCode: "Opcode Not Found" };
-      break;
+      if (!instruction.endsWith(":")) {
+        return {
+          success: false,
+          machineCode: `${instruction}Opcode or Label is unknown `,
+        };
+      } else {
+        if (labelMap.get(instruction) == undefined) {
+          const data = localStorage.getItem("code").split("\n");
+          const labelCood = [];
+          for (let i = 0; i < data.length; i++) {
+            if (data[i].includes(instruction.slice(0, -1))) {
+              labelCood.push(i);
+              console.log("sd");
+            }
+          }
+          if (labelCood.length === 2) {
+            const temp = labelCood[0];
+            labelCood[0] = labelCood[1];
+            labelCood[1] = temp;
+            labelMap.set(instruction + ":", labelCood);
+            console.log(labelMap);
+            return {
+              success: true,
+              label: `${instruction} updated`,
+            };
+          }
+          return {
+            success: false,
+            machineCode: `cannot find the initialiazed label ${instruction}`,
+          };
+        } else {
+          const obj = tokenizeAndCompile(operandArray.join(" "));
+          return {
+            success: obj.success,
+            machineCode: obj.machineCode,
+          };
+        }
+      }
   }
   return { success: comp.success, machineCode: comp.machineCode };
 
   function onebyte(operand) {
+    const temp = [...Register];
+    temp.push("M");
     const operandsArray = operand.split(",");
-    const isValid = operandsArray.every((item) =>
-      Register.includes(item.trim())
-    );
+
+    const isValid = operandsArray.every((item) => temp.includes(item.trim()));
     if (operandsArray.length !== 2) {
       return { success: false, machineCode: "There Must be two Register" };
     }
@@ -109,7 +146,7 @@ function tokenizeAndCompile(line, index) {
       (operand[0] === "M" || Register.includes(operand))
     ) {
       if (operand[0] !== "A") {
-        return { success: true, machineCode: index };
+        return { success: true, machineCode: "Compile Sccessfully" };
       }
       return { success: false, machineCode: "Accumulator cannot be added" };
     }
@@ -145,30 +182,57 @@ function tokenizeAndCompile(line, index) {
       machineCode: "Register Pair not recognizable",
     };
   }
+  function label(operand) {
+    if (operand.endsWith(":"))
+      return {
+        success: false,
+        machineCode: `initialing laber cannot ends with ':'`,
+      };
+    if (labelMap.get(operand + ":") != undefined) {
+      return {
+        success: true,
+        label: `${operand} updated`,
+      };
+    }
+    const data = localStorage.getItem("code").split("\n");
+    const labelCood = [];
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].includes(operand)) labelCood.push(i);
+    }
+    if (labelCood.length === 2) {
+      labelMap.set(operand + ":", labelCood);
+      return {
+        success: true,
+        label: `${operand} updated`,
+      };
+    }
+    return {
+      success: false,
+      machineCode: "Address of the label cannot found",
+    };
+  }
 
   function checkHex(inputString, num = 2) {
     const hexPattern =
       num === 2 ? /^(0x)?[0-9A-Fa-f]{1,4}h$/ : /^[0-9A-Fa-f]{2}h$/;
     if (hexPattern.test(inputString) && inputString.length === 5 && num === 2) {
-      $s(parseInt(inputString.substring(2, 4)));
-      $s(parseInt(inputString.substring(0, 2)));
+      $s(inputString.substring(2, 4));
+      $s(inputString.substring(0, 2));
+
       return true;
     } else if (
       hexPattern.test(inputString) &&
       inputString.length === 3 &&
       num === 1
     ) {
-      $s(parseInt(inputString.substring(0, 2)));
+      $s(inputString.substring(0, 2));
       return true;
     }
     return false;
   }
 }
 function $s(data = false) {
-  const p3 = document.querySelector(`.me${index}`);
-  p3.textContent = !data ? opc : data;
-  index++;
-}
-function k(ind) {
-  index = ind;
+  const p3 = document.querySelector(`.me${localCounter}`);
+  p3.textContent = data;
+  localCounter += 1;
 }

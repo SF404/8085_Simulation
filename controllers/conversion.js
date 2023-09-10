@@ -10,8 +10,13 @@ function decimalToHex() {
 }
 
 function hexToDecimal() {
+  hex.value = hex.value.toUpperCase().padStart(4, "0") + "H";
+  if (!/^[0-9A-F]{4}$/.test(hex.value) || hex.value.length > 4) {
+    document.querySelector(".Output").innerHTML +=
+      "HEX is not in the Range of (0000H-FFFFH)";
+    return;
+  }
   decimal.value = parseInt(hex.value, 16);
-  hex.value = hex.value.toUpperCase();
 }
 function updateName() {
   nameY.textContent = sel.value === "io" ? "I/O" : "Memory";
@@ -20,21 +25,32 @@ function updateData() {
   let msj;
   const outputDiv = document.querySelector(".Output");
   outputDiv.innerHTML = "";
-  if (addr.value > 1000) {
-    msj = "Memory Overflow";
-    outputDiv.innerHTML = msj;
+  val.value = val.value.toUpperCase().padStart(2, "0");
+  if (!/^[0-9A-F]{2}$/.test(val.value) || val.value.length > 2) {
+    outputDiv.innerHTML += "Data is not in the Range of (00H-FFH)";
     return;
   }
   if (sel.value === "io") {
-    const p3 = document.querySelector(`.io${addr.value}`);
+    addr.value = addr.value.toUpperCase().padStart(2, "0");
+    if (!/^[0-9A-F]{2}$/.test(addr.value) || addr.value.length > 2) {
+      outputDiv.innerHTML += "Port Address is not in the Range of (00H-FFH)";
+      return;
+    }
+    const p3 = document.querySelector(`.io${parseInt(addr.value, 16)}`);
     p3.textContent = val.value;
-    msj = "Port Updated";
+    msj = `Port Updated at ${addr.value}H`;
   } else {
-    const p3 = document.querySelector(`.me${addr.value}`);
+    addr.value = addr.value.toUpperCase().padStart(4, "0");
+    if (!/^[0-9A-F]{4}$/.test(addr.value) || addr.value.length > 4) {
+      outputDiv.innerHTML +=
+        "Memory Address is not in the Range of (0000H-FFFFH)";
+      return;
+    }
+    const p3 = document.querySelector(`.me${parseInt(addr.value, 16)}`);
     p3.textContent = val.value;
-    msj = "Memory Updated";
+    msj = `Memory Updated at ${addr.value}H`;
   }
 
-  outputDiv.innerHTML = msj;
+  outputDiv.innerHTML += msj;
   return;
 }

@@ -1,5 +1,3 @@
-// import { tokenizeAndCompile } from "./core/compile.js";
-// import { opcodeFetch } from "./core/alu.js";
 var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
   mode: "8085", // Set to the assembly language mode you've created
   theme: "dracula", // Choose your preferred theme
@@ -9,20 +7,28 @@ var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
   matchBrackets: true, // Highlight matching brackets
   autoCloseBrackets: true, // Automatically close brackets
 });
+let instruction = 0;
+let localCounter = 100;
+let labelMap = new Map();
+let instructionsArray = [];
 const Sdata = localStorage.getItem("code");
 if (Sdata !== null) editor.setValue(Sdata);
 document.getElementById("compile").addEventListener("click", function () {
+  const start = localCounter;
   localStorage.setItem("code", editor.getValue());
-  let index = 100;
   const assemblyCode = editor.getValue().split("\n");
   const outputDiv = document.querySelector(".Output");
   outputDiv.innerHTML = "";
   for (let i = 0; i < assemblyCode.length; i++) {
     const line = assemblyCode[i];
-    const result = tokenizeAndCompile(line, index);
+    instructionsArray.push(line);
+    if (line == "" || line.startsWith(";")) continue;
+    const result = tokenizeAndCompile(line);
     const machineCode = result.machineCode;
     if (result.success) {
-      index += machineCode;
+      const StartHex = start.toString(16).toUpperCase().padStart(4, "0");
+      $("Pgr").innerHTML = StartHex.substring(0, 2);
+      $("Ctr").innerHTML = StartHex.substring(2, 4);
       outputDiv.innerHTML += `<p>Line ${
         i + 1
       }: "Instructions are stored from memory address 0x0064"</p>`;
@@ -32,15 +38,16 @@ document.getElementById("compile").addEventListener("click", function () {
       outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
       document.getElementById("compile").style.display = "inline-block";
       document.getElementById("run").style.display = "none";
+      break;
     }
   }
+  console.log(instructionsArray);
+  console.log(labelMap);
 });
 document.getElementById("run").addEventListener("click", function () {
   const assemblyCode = editor.getValue().split("\n");
-  // const outputDiv = document.querySelector(".Output");
-  // outputDiv.innerHTML = "";
-  for (let i = 0; i < assemblyCode.length; i++) {
-    const line = assemblyCode[i];
+  while (instruction < assemblyCode.length) {
+    const line = assemblyCode[instruction];
     if (opcodeFetch(line)) {
       document.getElementById("compile").style.display = "inline-block";
       document.getElementById("run").style.display = "none";
@@ -49,6 +56,7 @@ document.getElementById("run").addEventListener("click", function () {
       document.getElementById("compile").style.display = "none";
       document.getElementById("run").style.display = "inline-block";
     }
+    instruction++;
   }
 });
 

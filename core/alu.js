@@ -27,133 +27,186 @@ let AC_flag = $("AC_flag");
 
 // const p3 = document.querySelector(`.me${nmbr}`);
 function opcodeFetch(line) {
+  Stk.innerHTML = "XX";
+  Ptr.innerHTML = "XX";
+  Int.innerHTML = "XX";
+  let byte = 0;
   const [instruction, ...operandArray] = line.trim().split(/\s+/);
   const operand = operandArray.join(" ").replace(/\s+/g, "");
   const inst = instruction.toLowerCase();
   const operandsArray = operand.split(",");
-  console.log(line);
-  console.log("Instruction: ", inst);
-  console.log("operand: ", operandsArray);
+  // console.log(line);
+  // console.log("Instruction: ", inst);
+  // console.log("operand: ", operandsArray);
   switch (inst) {
     // Data Transfer
     case "mov": //MOV A,B
+      byte = 1;
       mov(operandsArray);
       break;
     case "add": //Arithematic Inputs
+      byte = 1;
       add(operandsArray);
       break;
     case "sub":
+      byte = 1;
       sub(operandsArray);
       break;
     case "inr":
+      byte = 1;
       inr(operandsArray);
       break;
     case "dcr":
+      byte = 1;
       dcr(operandsArray);
       break;
     case "ana": //Logic Bit Manupulation Inst
+      byte = 1;
       ana(operandsArray);
       break;
     case "ora":
+      byte = 1;
       ora(operandsArray);
       break;
     case "xra": //ADD C
+      byte = 1;
       xra(operandsArray);
       break;
     case "adi": //Arithematic Inputs
+      byte = 2;
       adi(operandsArray);
       break;
     case "sui":
+      byte = 2;
       sui(operandsArray);
       break;
     case "ani": //Logic Bit Manupulation Inst
+      byte = 2;
       ani(operandsArray);
       break;
     case "ori":
+      byte = 2;
       ori(operandsArray);
       break;
     case "xri":
+      byte = 2;
       xri(operandsArray);
       break;
     case "out":
+      byte = 2;
       out(operandsArray);
       break;
     case "in": //ADI 34h
+      byte = 2;
       in_(operandsArray);
       break;
     case "mvi": //MVI A,34h
+      byte = 2;
       mvi(operandsArray);
       break;
     case "lxi": //LXI A,3456h
+      byte = 3;
       lxi(operandsArray);
       break;
     case "lda":
+      byte = 3;
       lda(operandsArray);
       break;
     case "sta":
+      byte = 3;
       sta(operandsArray);
       break;
     case "jmp": //Branch inst
+      byte = 3;
       jmp(operandsArray);
       break;
     case "jc":
+      byte = 3;
       jc(operandsArray);
       break;
     case "jnc":
+      byte = 3;
       jnc(operandsArray);
       break;
     case "jz":
+      byte = 3;
       jz(operandsArray);
       break;
     case "jnz":
+      byte = 3;
       jnz(operandsArray);
       break;
     case "jp":
+      byte = 3;
       jp(operandsArray);
       break;
     case "call": //LDA 3423h
+      byte = 3;
       call(operandsArray);
       break;
     case "ldax":
+      byte = 1;
       ldax(operandsArray);
       break;
     case "stax":
+      byte = 1;
       stax(operandsArray);
       break;
     case "inx": //Arithematic Inputs
+      byte = 1;
       inx(operandsArray);
       break;
     case "dcx": //inx M
+      byte = 1;
       dcx(operandsArray);
       break;
     case "rlc": //Compare inst
+      byte = 1;
       rlc();
       break;
     case "rrc":
+      byte = 1;
       rrc();
       break;
     case "ral":
+      byte = 1;
       ral();
       break;
     case "rar":
+      byte = 1;
       rar();
       break;
     case "hlt": //Machine Ctrl Inst
+      byte = 1;
       hlt();
       break;
     case "nop":
+      byte = 1;
       nop();
       break;
     case "return":
+      byte = 1;
       return_();
       break;
     default:
-      return false;
+      const obj = opcodeFetch(operandArray.join(" "));
+      return true;
   }
+  const Rp = Pgr.innerHTML + Ctr.innerHTML;
+  const inc = (parseInt(Rp, 16) + byte)
+    .toString(16)
+    .toUpperCase()
+    .padStart(4, "0");
+  Pgr.innerHTML = inc.substring(0, 2);
+  Ctr.innerHTML = inc.substring(2, 4);
   return true;
 }
 
-function mov(operandsArray) {} //MOV A,B
+function mov(operandsArray) {
+  if (operandsArray[0] === "M") H.innerHTML = $(operandsArray[1]).innerHTML;
+  if (operandsArray[1] === "M") $(operandsArray[0]).innerHTML = H.innerHTML;
+  else $(operandsArray[0]).innerHTML = $(operandsArray[1]).innerHTML;
+} //MOV A,B
 
 function add(operandsArray) {
   // let k;
@@ -163,11 +216,19 @@ function add(operandsArray) {
     const p3 = document.querySelector(`.me${dec}`);
     k = p3.textContent;
   } else k = $(operandsArray[0]).innerHTML;
-  console.log(parseInt(A.innerHTML, 16));
   const val1 = parseInt(k, 16);
   const val2 = parseInt(A.innerHTML, 16);
-  console.log(k);
-  A.innerHTML = (val1 + val2).toString(16).toUpperCase();
+  console.log(val1);
+  console.log(val2);
+  const result = val1 + val2;
+
+  A.innerHTML = result.toString(16).toUpperCase();
+  Parity_Flag_check(result);
+  if (result < 0) S_flag.innerHTML = 1;
+
+  if (result === 0) Z_flag.innerHTML = 1;
+
+  if (result > 0xff) C_flag.innerHTML = 1;
 } //Arithematic Inputs
 
 function sub(operandsArray) {
@@ -178,9 +239,16 @@ function sub(operandsArray) {
     const p3 = document.querySelector(`.me${dec}`);
     k = p3.textContent;
   } else k = $(operandsArray[0]).innerHTML;
-  const val1 = parseInt(k, 16);
-  const val2 = parseInt(A.innerHTML, 16);
-  A.innerHTML = (val1 - val2).toString(16).toUpperCase();
+  const val2 = parseInt(k, 16);
+  const val1 = parseInt(A.innerHTML, 16);
+  const result = val1 - val2;
+  A.innerHTML = Math.abs(result).toString(16).toUpperCase();
+  Parity_Flag_check(result);
+  if (result < 0) {
+    S_flag.innerHTML = 1;
+    C_flag.innerHTML = 1;
+  }
+  if (result === 0) Z_flag.innerHTML = 1;
 }
 
 function inr(operandsArray) {
@@ -193,9 +261,11 @@ function inr(operandsArray) {
     p3.textContent = incrementedValue.toString(16).toUpperCase();
   } else {
     const incrementedValue = parseInt($(operandsArray[0]).innerHTML, 16) + 1;
-    console.log(incrementedValue.toString(16));
 
     $(operandsArray[0]).innerHTML = incrementedValue.toString(16).toUpperCase();
+    Parity_Flag_check(incrementedValue);
+    if (incrementedValue === 0) Z_flag.innerHTML = 1;
+    if (incrementedValue > 0xff) C_flag.innerHTML = 1;
   }
 }
 
@@ -212,6 +282,9 @@ function dcr(operandsArray) {
     console.log(incrementedValue.toString(16));
 
     $(operandsArray[0]).innerHTML = incrementedValue.toString(16).toUpperCase();
+    Parity_Flag_check(incrementedValue);
+    if (incrementedValue < 0) S_flag.innerHTML = 1;
+    if (incrementedValue === 0) Z_flag.innerHTML = 1;
   }
 }
 
@@ -225,7 +298,13 @@ function ana(operandsArray) {
   } else k = $(operandsArray[0]).innerHTML;
   const val1 = parseInt(k, 16);
   const val2 = parseInt(A.innerHTML, 16);
-  A.innerHTML = (val1 & val2).toString(16).toUpperCase();
+  const result = val1 & val2;
+
+  A.innerHTML = result.toString(16).toUpperCase();
+  Parity_Flag_check(result);
+  if (result < 0) S_flag.innerHTML = 1;
+  if (result === 0) Z_flag.innerHTML = 1;
+  if (result > 0xff) C_flag.innerHTML = 1;
 } //Logic Bit Manupulation Inst
 
 function ora(operandsArray) {
@@ -238,7 +317,12 @@ function ora(operandsArray) {
   } else k = $(operandsArray[0]).innerHTML;
   const val1 = parseInt(k, 16);
   const val2 = parseInt(A.innerHTML, 16);
-  A.innerHTML = (val1 | val2).toString(16).toUpperCase();
+  const result = val1 | val2;
+  A.innerHTML = result.toString(16).toUpperCase();
+  Parity_Flag_check(result);
+  if (result < 0) S_flag.innerHTML = 1;
+  if (result === 0) Z_flag.innerHTML = 1;
+  if (result > 0xff) C_flag.innerHTML = 1;
 }
 
 function xra(operandsArray) {
@@ -251,37 +335,74 @@ function xra(operandsArray) {
   } else k = $(operandsArray[0]).innerHTML;
   const val1 = parseInt(k, 16);
   const val2 = parseInt(A.innerHTML, 16);
-  A.innerHTML = (val1 ^ val2).toString(16).toUpperCase();
+  const result = val1 ^ val2;
+
+  A.innerHTML = result.toString(16).toUpperCase();
+  Parity_Flag_check(result);
+  if (result < 0) S_flag.innerHTML = 1;
+  if (result === 0) Z_flag.innerHTML = 1;
+  if (result > 0xff) C_flag.innerHTML = 1;
 } //ADD C
 
 function adi(operandsArray) {
   const val1 = parseInt(operandsArray[0], 16);
   const val2 = parseInt(A.innerHTML, 16);
-  A.innerHTML = (val1 + val2).toString(16).toUpperCase();
+  const result = val1 + val2;
+
+  A.innerHTML = result.toString(16).toUpperCase();
+  Parity_Flag_check(result);
+  if (result < 0) S_flag.innerHTML = 1;
+  if (result === 0) Z_flag.innerHTML = 1;
+  if (result > 0xff) C_flag.innerHTML = 1;
 } //Arithematic Inputs
 
 function sui(operandsArray) {
-  const val1 = parseInt(operandsArray[0], 16);
-  const val2 = parseInt(A.innerHTML, 16);
-  A.innerHTML = (val1 - val2).toString(16).toUpperCase();
+  const val2 = parseInt(operandsArray[0], 16);
+  const val1 = parseInt(A.innerHTML, 16);
+  const result = val1 - val2;
+  A.innerHTML = Math.abs(result).toString(16).toUpperCase();
+  Parity_Flag_check(result);
+  if (result < 0) {
+    S_flag.innerHTML = 1;
+    C_flag.innerHTML = 1;
+  }
+  if (result === 0) Z_flag.innerHTML = 1;
 }
 
 function ani(operandsArray) {
   const val1 = parseInt(operandsArray[0], 16);
   const val2 = parseInt(A.innerHTML, 16);
-  A.innerHTML = (val1 & val2).toString(16).toUpperCase();
+  const result = val1 & val2;
+
+  A.innerHTML = result.toString(16).toUpperCase();
+  Parity_Flag_check(result);
+  if (result < 0) S_flag.innerHTML = 1;
+  if (result === 0) Z_flag.innerHTML = 1;
+  if (result > 0xff) C_flag.innerHTML = 1;
 } //Logic Bit Manupulation Inst
 
 function ori(operandsArray) {
   const val1 = parseInt(operandsArray[0], 16);
   const val2 = parseInt(A.innerHTML, 16);
-  A.innerHTML = (val1 | val2).toString(16).toUpperCase();
+  const result = val1 | val2;
+
+  A.innerHTML = result.toString(16).toUpperCase();
+  Parity_Flag_check(result);
+  if (result < 0) S_flag.innerHTML = 1;
+  if (result === 0) Z_flag.innerHTML = 1;
+  if (result > 0xff) C_flag.innerHTML = 1;
 }
 
 function xri(operandsArray) {
   const val1 = parseInt(operandsArray[0], 16);
   const val2 = parseInt(A.innerHTML, 16);
-  A.innerHTML = (val1 ^ val2).toString(16).toUpperCase();
+  const result = val1 ^ val2;
+
+  A.innerHTML = result.toString(16).toUpperCase();
+  Parity_Flag_check(result);
+  if (result < 0) S_flag.innerHTML = 1;
+  if (result === 0) Z_flag.innerHTML = 1;
+  if (result > 0xff) C_flag.innerHTML = 1;
 }
 
 function out(operandsArray) {
@@ -302,22 +423,23 @@ function mvi(operandsArray) {
 }
 
 function lxi(operandsArray) {
-  const dec = parseInt(operandsArray[0], 16);
-  const p3 = document.querySelector(`.me${dec}`);
-  value = p3.textContent.padStart(4, "0");
+  // const dec = parseInt(operandsArray[1], 16);
+  // const p3 = document.querySelector(`.me${dec}`);
+  // value = p3.textContent.padStart(4, "0");
+  // console.log(value);
   switch (operandsArray[0]) {
     case "B":
-      B.innerHTML = value.substring(3, 4);
-      C.innerHTML = value.substring(0, 2);
+      C.innerHTML = operandsArray[1].substring(2, 4);
+      B.innerHTML = operandsArray[1].substring(0, 2);
       break;
     case "D":
-      D.innerHTML = value.substring(3, 4);
-      E.innerHTML = value.substring(0, 2);
+      E.innerHTML = operandsArray[1].substring(2, 4);
+      D.innerHTML = operandsArray[1].substring(0, 2);
       break;
     case "H":
     case "M":
-      H.innerHTML = value.substring(3, 4);
-      L.innerHTML = value.substring(0, 2);
+      L.innerHTML = operandsArray[1].substring(2, 4);
+      H.innerHTML = operandsArray[1].substring(0, 2);
       break;
   }
 }
@@ -333,14 +455,17 @@ function sta(operandsArray) {
   p3.textContent = A.innerHTML;
 }
 
-function jmp(operandsArray) {} //Branch inst
+function jmp(operandsArray) {
+  console.log(operandsArray + " executed");
+  instruction = labelMap.get(operandsArray[0] + ":")[1] - 1;
+} //Branch inst
 
 function jc(operandsArray) {
   if (C_flag.innerHTML == 1) jmp(operandsArray);
 }
 
 function jnc(operandsArray) {
-  if (C_flag.innerHTML == 1) jmp(operandsArray);
+  if (C_flag.innerHTML == 0) jmp(operandsArray);
 }
 
 function jz(operandsArray) {
@@ -410,9 +535,11 @@ function inx(operandsArray) {
       temp = L;
       break;
   }
-  console.log(temp.innerHTML);
   const incrementedValue = parseInt(temp.innerHTML, 16) + 1;
   temp.innerHTML = incrementedValue.toString(16).toUpperCase();
+  Parity_Flag_check(incrementedValue);
+  if (incrementedValue === 0) Z_flag.innerHTML = 1;
+  if (incrementedValue > 0xff) C_flag.innerHTML = 1;
 } //Arithematic Inputs
 
 function dcx(operandsArray) {
@@ -429,9 +556,11 @@ function dcx(operandsArray) {
       temp = L;
       break;
   }
-  console.log(temp.innerHTML);
   const incrementedValue = parseInt(temp.innerHTML, 16) - 1;
   temp.innerHTML = incrementedValue.toString(16).toUpperCase();
+  Parity_Flag_check(incrementedValue);
+  if (incrementedValue === 0) Z_flag.innerHTML = 1;
+  if (incrementedValue < 0) S_flag.innerHTML = 1;
 }
 
 function rlc() {
@@ -444,6 +573,7 @@ function rlc() {
   C_flag.innerHTML = shiftedOutBit;
   console.log(binaryNumber, resultBinary);
   A.innerHTML = binaryToDecimal(resultBinary).toString(16).toUpperCase();
+  Parity_Flag_check(A.innerHTML);
 }
 
 function rrc() {
@@ -456,6 +586,7 @@ function rrc() {
   const resultBinary = bits.join("");
   console.log(binaryNumber, resultBinary);
   A.innerHTML = binaryToDecimal(resultBinary).toString(16).toUpperCase();
+  Parity_Flag_check(A.innerHTML);
 }
 
 function ral() {
@@ -468,6 +599,7 @@ function ral() {
   const resultBinary = bits.join("");
   console.log(binaryNumber, resultBinary);
   A.innerHTML = binaryToDecimal(resultBinary).toString(16).toUpperCase();
+  Parity_Flag_check(A.innerHTML);
 }
 
 function rar() {
@@ -480,6 +612,7 @@ function rar() {
   const resultBinary = bits.join("");
   console.log(binaryNumber, resultBinary);
   A.innerHTML = binaryToDecimal(resultBinary).toString(16).toUpperCase();
+  Parity_Flag_check(A.innerHTML);
 }
 
 function hlt() {}
@@ -494,4 +627,9 @@ function decimalToBinary(decimalNumber) {
 
 function binaryToDecimal(binaryNumber) {
   return parseInt(binaryNumber, 2);
+}
+function Parity_Flag_check(result) {
+  const binaryResult = decimalToBinary(parseInt(result, 16));
+  const setBitsCount = (binaryResult.match(/1/g) || []).length;
+  if (setBitsCount % 2 === 0) P_flag.innerHTML = 1;
 }
