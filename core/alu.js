@@ -32,6 +32,7 @@ function opcodeFetch(line) {
   Int.innerHTML = "XX";
   let byte = 0;
   const [instruction, ...operandArray] = line.trim().split(/\s+/);
+  console.log(operandArray);
   const operand = operandArray.join(" ").replace(/\s+/g, "");
   const inst = instruction.toLowerCase();
   const operandsArray = operand.split(",");
@@ -189,7 +190,7 @@ function opcodeFetch(line) {
       return_();
       break;
     default:
-      const obj = opcodeFetch(operandArray.join(" "));
+      if (operandArray.length !== 0) opcodeFetch(operandArray.join(" "));
       return true;
   }
   const Rp = Pgr.innerHTML + Ctr.innerHTML;
@@ -203,8 +204,12 @@ function opcodeFetch(line) {
 }
 
 function mov(operandsArray) {
-  if (operandsArray[0] === "M") H.innerHTML = $(operandsArray[1]).innerHTML;
-  if (operandsArray[1] === "M") $(operandsArray[0]).innerHTML = H.innerHTML;
+  const k = H.innerHTML + L.innerHTML;
+  const p3 = document.querySelector(`.me${parseInt(k, 16)}`);
+  console.log(operandsArray);
+  if (operandsArray[0] === "M") p3.textContent = $(operandsArray[1]).innerHTML;
+  else if (operandsArray[1] === "M")
+    $(operandsArray[0]).innerHTML = p3.textContent;
   else $(operandsArray[0]).innerHTML = $(operandsArray[1]).innerHTML;
 } //MOV A,B
 
@@ -216,15 +221,14 @@ function add(operandsArray) {
     const p3 = document.querySelector(`.me${dec}`);
     k = p3.textContent;
   } else k = $(operandsArray[0]).innerHTML;
-  const val1 = parseInt(k, 16);
-  const val2 = parseInt(A.innerHTML, 16);
-  console.log(val1);
-  console.log(val2);
+  const val2 = parseInt(k, 16);
+  const val1 = parseInt(A.innerHTML, 16);
   const result = val1 + val2;
+  console.log(result);
 
-  A.innerHTML = result.toString(16).toUpperCase();
+  A.innerHTML = result.toString(16).toUpperCase().padStart(2, "0");
   Parity_Flag_check(result);
-  if (result < 0) S_flag.innerHTML = 1;
+  if ((result & 0x80) !== 0) S_flag.innerHTML = 1;
 
   if (result === 0) Z_flag.innerHTML = 1;
 
@@ -261,7 +265,6 @@ function inr(operandsArray) {
     p3.textContent = incrementedValue.toString(16).toUpperCase();
   } else {
     const incrementedValue = parseInt($(operandsArray[0]).innerHTML, 16) + 1;
-
     $(operandsArray[0]).innerHTML = incrementedValue.toString(16).toUpperCase();
     Parity_Flag_check(incrementedValue);
     if (incrementedValue === 0) Z_flag.innerHTML = 1;
@@ -279,9 +282,9 @@ function dcr(operandsArray) {
     p3.textContent = incrementedValue.toString(16).toUpperCase();
   } else {
     const incrementedValue = parseInt($(operandsArray[0]).innerHTML, 16) - 1;
-    console.log(incrementedValue.toString(16));
 
     $(operandsArray[0]).innerHTML = incrementedValue.toString(16).toUpperCase();
+    console.log(incrementedValue.toString(16).toUpperCase());
     Parity_Flag_check(incrementedValue);
     if (incrementedValue < 0) S_flag.innerHTML = 1;
     if (incrementedValue === 0) Z_flag.innerHTML = 1;
@@ -348,8 +351,8 @@ function adi(operandsArray) {
   const val1 = parseInt(operandsArray[0], 16);
   const val2 = parseInt(A.innerHTML, 16);
   const result = val1 + val2;
-
-  A.innerHTML = result.toString(16).toUpperCase();
+  console.log(result.toString(16).toUpperCase().padStart(2, "0"));
+  A.innerHTML = result.toString(16).toUpperCase().padStart(2, "0");
   Parity_Flag_check(result);
   if (result < 0) S_flag.innerHTML = 1;
   if (result === 0) Z_flag.innerHTML = 1;
@@ -423,10 +426,6 @@ function mvi(operandsArray) {
 }
 
 function lxi(operandsArray) {
-  // const dec = parseInt(operandsArray[1], 16);
-  // const p3 = document.querySelector(`.me${dec}`);
-  // value = p3.textContent.padStart(4, "0");
-  // console.log(value);
   switch (operandsArray[0]) {
     case "B":
       C.innerHTML = operandsArray[1].substring(2, 4);
@@ -445,12 +444,14 @@ function lxi(operandsArray) {
 }
 function lda(operandsArray) {
   const dec = parseInt(operandsArray[0], 16);
+  console.log(dec);
   const p3 = document.querySelector(`.me${dec}`);
   A.innerHTML = p3.textContent;
 }
 
 function sta(operandsArray) {
   const dec = parseInt(operandsArray[0], 16);
+
   const p3 = document.querySelector(`.me${dec}`);
   p3.textContent = A.innerHTML;
 }

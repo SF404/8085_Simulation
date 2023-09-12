@@ -87,14 +87,13 @@ function tokenizeAndCompile(line) {
           for (let i = 0; i < data.length; i++) {
             if (data[i].includes(instruction.slice(0, -1))) {
               labelCood.push(i);
-              console.log("sd");
             }
           }
           if (labelCood.length === 2) {
             const temp = labelCood[0];
             labelCood[0] = labelCood[1];
             labelCood[1] = temp;
-            labelMap.set(instruction + ":", labelCood);
+            labelMap.set(instruction, labelCood);
             console.log(labelMap);
             return {
               success: true,
@@ -130,6 +129,22 @@ function tokenizeAndCompile(line) {
     } else return { success: false, machineCode: "Register Not Found" };
   }
 
+  function onebyte(operand) {
+    const operandsArray = operand.split(",");
+
+    const isValid =
+      operandsArray.every((item) => Register.includes(item.trim())) ||
+      operandsArray[0] === "M" ||
+      operandsArray[1] === "M";
+    if (operandsArray.length !== 2) {
+      return { success: false, machineCode: "There Must be two Register" };
+    }
+    console.log(operandsArray);
+    if (isValid) {
+      return { success: true, machineCode: 2 };
+    } else return { success: false, machineCode: "Register Not Found" };
+  }
+
   function multibyte(operand, hexByte) {
     const operandArray = operand.split(",");
     if (operandArray.length !== 2)
@@ -145,10 +160,7 @@ function tokenizeAndCompile(line) {
       operand.length === 1 &&
       (operand[0] === "M" || Register.includes(operand))
     ) {
-      if (operand[0] !== "A") {
-        return { success: true, machineCode: "Compile Sccessfully" };
-      }
-      return { success: false, machineCode: "Accumulator cannot be added" };
+      return { success: true, machineCode: "Compile Sccessfully" };
     }
     return { success: false, machineCode: "Invalid operand" };
   }

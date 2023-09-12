@@ -10,7 +10,7 @@ function decimalToHex() {
 }
 
 function hexToDecimal() {
-  hex.value = hex.value.toUpperCase().padStart(4, "0") + "H";
+  hex.value = hex.value.toUpperCase().padStart(4, "0");
   if (!/^[0-9A-F]{4}$/.test(hex.value) || hex.value.length > 4) {
     document.querySelector(".Output").innerHTML +=
       "HEX is not in the Range of (0000H-FFFFH)";

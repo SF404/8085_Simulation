@@ -85,5 +85,23 @@ const container2 = document.getElementById("scroll_io");
 for (let i = 0; i < 4096; i++) {
   const hexAddress = i.toString(16).toUpperCase().padStart(4, "0");
   appendAddressElement(container1, hexAddress, "me");
+}
+for (let i = 0; i < 256; i++) {
+  const hexAddress = i.toString(16).toUpperCase().padStart(2, "0");
   appendAddressElement(container2, hexAddress, "io");
+}
+
+const close_model_button = document.querySelector(".close_model");
+close_model_button.addEventListener("click", () => {
+  const model = document.getElementById("model");
+  model.classList.add("hide");
+});
+
+function loadHelp() {
+  const model = document.getElementById("model");
+  model.classList.remove("hide");
+}
+
+function resetAll() {
+  window.location.reload();
 }
