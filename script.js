@@ -1,5 +1,3 @@
-// import { tokenizeAndCompile } from "./core/compile.js";
-// import { opcodeFetch } from "./core/alu.js";
 var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
   mode: "8085", // Set to the assembly language mode you've created
   theme: "dracula", // Choose your preferred theme
@@ -9,38 +7,56 @@ var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
   matchBrackets: true, // Highlight matching brackets
   autoCloseBrackets: true, // Automatically close brackets
 });
+let instruction = 0;
+let localCounter = 100;
+let labelMap = new Map();
+let instructionsArray = [];
+const Sdata = localStorage.getItem("code");
+if (Sdata !== null) editor.setValue(Sdata);
 document.getElementById("compile").addEventListener("click", function () {
-  let index = 100;
+  const start = localCounter;
+  localStorage.setItem("code", editor.getValue());
   const assemblyCode = editor.getValue().split("\n");
   const outputDiv = document.querySelector(".Output");
   outputDiv.innerHTML = "";
   for (let i = 0; i < assemblyCode.length; i++) {
     const line = assemblyCode[i];
-    const result = tokenizeAndCompile(line, index);
+    instructionsArray.push(line);
+    if (line == "" || line.startsWith(";")) continue;
+    const result = tokenizeAndCompile(line);
     const machineCode = result.machineCode;
     if (result.success) {
-      index += machineCode;
+      const StartHex = start.toString(16).toUpperCase().padStart(4, "0");
+      $("Pgr").innerHTML = StartHex.substring(0, 2);
+      $("Ctr").innerHTML = StartHex.substring(2, 4);
       outputDiv.innerHTML += `<p>Line ${
         i + 1
       }: "Instructions are stored from memory address 0x0064"</p>`;
-    } else outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
+      document.getElementById("compile").style.display = "none";
+      document.getElementById("run").style.display = "inline-block";
+    } else {
+      outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
+      document.getElementById("compile").style.display = "inline-block";
+      document.getElementById("run").style.display = "none";
+      break;
+    }
   }
+  console.log(instructionsArray);
+  console.log(labelMap);
 });
 document.getElementById("run").addEventListener("click", function () {
   const assemblyCode = editor.getValue().split("\n");
-  // const outputDiv = document.querySelector(".Output");
-  // outputDiv.innerHTML = "";
-  for (let i = 0; i < assemblyCode.length; i++) {
-    const line = assemblyCode[i];
-    const result = opcodeFetch(line);
-    // const machineCode = result.machineCode;
-    // if (result.success) {
-    //   console.log(index);
-    //   index += machineCode;
-    //   outputDiv.innerHTML += `<p>Line ${
-    //     i + 1
-    //   }: "Instructions are stored from memory address 0x0064"</p>`;
-    // } else outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
+  while (instruction < assemblyCode.length) {
+    const line = assemblyCode[instruction];
+    if (opcodeFetch(line)) {
+      document.getElementById("compile").style.display = "inline-block";
+      document.getElementById("run").style.display = "none";
+    } else {
+      console.log("execution failed");
+      document.getElementById("compile").style.display = "none";
+      document.getElementById("run").style.display = "inline-block";
+    }
+    instruction++;
   }
 });
 
@@ -69,5 +85,30 @@ const container2 = document.getElementById("scroll_io");
 for (let i = 0; i < 4096; i++) {
   const hexAddress = i.toString(16).toUpperCase().padStart(4, "0");
   appendAddressElement(container1, hexAddress, "me");
+}
+for (let i = 0; i < 256; i++) {
+  const hexAddress = i.toString(16).toUpperCase().padStart(2, "0");
   appendAddressElement(container2, hexAddress, "io");
+}
+
+const close_model_button = document.querySelector(".close_model");
+close_model_button.addEventListener("click", () => {
+  const model = document.getElementById("model");
+  model.classList.add("hide");
+});
+
+function loadHelp() {
+  const model = document.getElementById("model");
+  model.classList.remove("hide");
+}
+function loadHelp() {
+  const model = document.getElementById("model");
+  model.classList.remove("hide");
+}
+function Github() {
+  window.open("https://github.com/rmrajesofficial/8085_Simulation", "_blank");
+}
+
+function resetAll() {
+  window.location.reload();
 }
