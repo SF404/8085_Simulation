@@ -19,7 +19,7 @@ function hexToDecimal() {
   decimal.value = parseInt(hex.value, 16);
 }
 function updateName() {
-  nameY.textContent = sel.value === "io" ? "I/O" : "Memory";
+  nameY.textContent = sel.value === "io" ? "IO Update" : "Memory Update";
 }
 function updateData() {
   let msj;

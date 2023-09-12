@@ -203,6 +203,10 @@ legend{
   margin: 5px 0px;
   padding: 1em;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  overflow-y: scroll;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  font-family: monospace;
 }
 
 /* right  ------------------------------------------------------*/
@@ -284,10 +288,6 @@ legend{
 
 button.focus{
   color: black;
-}
-
-#run {
-  display: none;
 }
 
 #name{

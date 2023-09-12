@@ -19,6 +19,7 @@ document.getElementById("compile").addEventListener("click", function () {
   const assemblyCode = editor.getValue().split("\n");
   const outputDiv = document.querySelector(".Output");
   outputDiv.innerHTML = "";
+  let flag=1;
   for (let i = 0; i < assemblyCode.length; i++) {
     const line = assemblyCode[i];
     instructionsArray.push(line);
@@ -32,14 +33,15 @@ document.getElementById("compile").addEventListener("click", function () {
       outputDiv.innerHTML += `<p>Line ${
         i + 1
       }: "Instructions are stored from memory address 0x0064"</p>`;
-      document.getElementById("compile").style.display = "none";
-      document.getElementById("run").style.display = "inline-block";
     } else {
+      flag=0;
       outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
-      document.getElementById("compile").style.display = "inline-block";
-      document.getElementById("run").style.display = "none";
       break;
     }
+  }
+  if(flag){
+    document.getElementById("compile").classList.toggle("hide")
+    document.getElementById("run").classList.toggle("hide")
   }
   console.log(instructionsArray);
   console.log(labelMap);
@@ -48,16 +50,10 @@ document.getElementById("run").addEventListener("click", function () {
   const assemblyCode = editor.getValue().split("\n");
   while (instruction < assemblyCode.length) {
     const line = assemblyCode[instruction];
-    if (opcodeFetch(line)) {
-      document.getElementById("compile").style.display = "inline-block";
-      document.getElementById("run").style.display = "none";
-    } else {
-      console.log("execution failed");
-      document.getElementById("compile").style.display = "none";
-      document.getElementById("run").style.display = "inline-block";
-    }
     instruction++;
   }
+  document.getElementById("compile").classList.toggle("hide")
+  document.getElementById("run").classList.toggle("hide")
 });
 
 function appendAddressElement(container, hexAddress, k) {
