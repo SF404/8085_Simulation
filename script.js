@@ -19,7 +19,7 @@ document.getElementById("compile").addEventListener("click", function () {
   const assemblyCode = editor.getValue().split("\n");
   const outputDiv = document.querySelector(".Output");
   outputDiv.innerHTML = "";
-  let flag=1;
+  let flag = 1;
   for (let i = 0; i < assemblyCode.length; i++) {
     const line = assemblyCode[i];
     instructionsArray.push(line);
@@ -30,18 +30,18 @@ document.getElementById("compile").addEventListener("click", function () {
       const StartHex = start.toString(16).toUpperCase().padStart(4, "0");
       $("Pgr").innerHTML = StartHex.substring(0, 2);
       $("Ctr").innerHTML = StartHex.substring(2, 4);
-      outputDiv.innerHTML += `<p>Line ${
-        i + 1
-      }: "Instructions are stored from memory address 0x0064"</p>`;
+      outputDiv.innerHTML += `<p>Line ${i + 1
+        }: "Instructions are stored from memory address 0x0064"</p>`;
     } else {
-      flag=0;
+      flag = 0;
       outputDiv.innerHTML += `<p>Line ${i + 1}: ${machineCode}</p>`;
       break;
     }
   }
-  if(flag){
+  if (flag) {
     document.getElementById("compile").classList.toggle("hide")
     document.getElementById("run").classList.toggle("hide")
+
   }
   console.log(instructionsArray);
   console.log(labelMap);

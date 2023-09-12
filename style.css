@@ -285,10 +285,6 @@ button.focus {
   color: black;
 }
 
-#run {
-  display: none;
-}
-
 #name{
   grid-column: 1 / span 2;
 }
