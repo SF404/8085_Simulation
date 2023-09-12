@@ -202,7 +202,6 @@ function opcodeFetch(line) {
   Ctr.innerHTML = inc.substring(2, 4);
   return true;
 }
-
 function mov(operandsArray) {
   const k = H.innerHTML + L.innerHTML;
   const p3 = document.querySelector(`.me${parseInt(k, 16)}`);
@@ -212,7 +211,6 @@ function mov(operandsArray) {
     $(operandsArray[0]).innerHTML = p3.textContent;
   else $(operandsArray[0]).innerHTML = $(operandsArray[1]).innerHTML;
 } //MOV A,B
-
 function add(operandsArray) {
   // let k;
   if (operandsArray[0] == "M") {
@@ -234,7 +232,6 @@ function add(operandsArray) {
 
   if (result > 0xff) C_flag.innerHTML = 1;
 } //Arithematic Inputs
-
 function sub(operandsArray) {
   let k;
   if (operandsArray[0] == "M") {
@@ -254,7 +251,6 @@ function sub(operandsArray) {
   }
   if (result === 0) Z_flag.innerHTML = 1;
 }
-
 function inr(operandsArray) {
   if (operandsArray[0] == "M") {
     const rp = H.innerHTML + L.innerHTML;
@@ -271,7 +267,6 @@ function inr(operandsArray) {
     if (incrementedValue > 0xff) C_flag.innerHTML = 1;
   }
 }
-
 function dcr(operandsArray) {
   if (operandsArray[0] == "M") {
     const rp = H.innerHTML + L.innerHTML;
@@ -290,7 +285,6 @@ function dcr(operandsArray) {
     if (incrementedValue === 0) Z_flag.innerHTML = 1;
   }
 }
-
 function ana(operandsArray) {
   let k;
   if (operandsArray[0] == "M") {
@@ -302,14 +296,12 @@ function ana(operandsArray) {
   const val1 = parseInt(k, 16);
   const val2 = parseInt(A.innerHTML, 16);
   const result = val1 & val2;
-
   A.innerHTML = result.toString(16).toUpperCase();
   Parity_Flag_check(result);
   if (result < 0) S_flag.innerHTML = 1;
   if (result === 0) Z_flag.innerHTML = 1;
   if (result > 0xff) C_flag.innerHTML = 1;
 } //Logic Bit Manupulation Inst
-
 function ora(operandsArray) {
   let k;
   if (operandsArray[0] == "M") {
@@ -327,7 +319,6 @@ function ora(operandsArray) {
   if (result === 0) Z_flag.innerHTML = 1;
   if (result > 0xff) C_flag.innerHTML = 1;
 }
-
 function xra(operandsArray) {
   let k;
   if (operandsArray[0] == "M") {
@@ -346,7 +337,6 @@ function xra(operandsArray) {
   if (result === 0) Z_flag.innerHTML = 1;
   if (result > 0xff) C_flag.innerHTML = 1;
 } //ADD C
-
 function adi(operandsArray) {
   const val1 = parseInt(operandsArray[0], 16);
   const val2 = parseInt(A.innerHTML, 16);
@@ -358,7 +348,6 @@ function adi(operandsArray) {
   if (result === 0) Z_flag.innerHTML = 1;
   if (result > 0xff) C_flag.innerHTML = 1;
 } //Arithematic Inputs
-
 function sui(operandsArray) {
   const val2 = parseInt(operandsArray[0], 16);
   const val1 = parseInt(A.innerHTML, 16);
@@ -371,7 +360,6 @@ function sui(operandsArray) {
   }
   if (result === 0) Z_flag.innerHTML = 1;
 }
-
 function ani(operandsArray) {
   const val1 = parseInt(operandsArray[0], 16);
   const val2 = parseInt(A.innerHTML, 16);
@@ -383,7 +371,6 @@ function ani(operandsArray) {
   if (result === 0) Z_flag.innerHTML = 1;
   if (result > 0xff) C_flag.innerHTML = 1;
 } //Logic Bit Manupulation Inst
-
 function ori(operandsArray) {
   const val1 = parseInt(operandsArray[0], 16);
   const val2 = parseInt(A.innerHTML, 16);
@@ -395,7 +382,6 @@ function ori(operandsArray) {
   if (result === 0) Z_flag.innerHTML = 1;
   if (result > 0xff) C_flag.innerHTML = 1;
 }
-
 function xri(operandsArray) {
   const val1 = parseInt(operandsArray[0], 16);
   const val2 = parseInt(A.innerHTML, 16);
@@ -448,41 +434,32 @@ function lda(operandsArray) {
   const p3 = document.querySelector(`.me${dec}`);
   A.innerHTML = p3.textContent;
 }
-
 function sta(operandsArray) {
   const dec = parseInt(operandsArray[0], 16);
 
   const p3 = document.querySelector(`.me${dec}`);
   p3.textContent = A.innerHTML;
 }
-
 function jmp(operandsArray) {
   console.log(operandsArray + " executed");
   instruction = labelMap.get(operandsArray[0] + ":")[1] - 1;
 } //Branch inst
-
 function jc(operandsArray) {
   if (C_flag.innerHTML == 1) jmp(operandsArray);
 }
-
 function jnc(operandsArray) {
   if (C_flag.innerHTML == 0) jmp(operandsArray);
 }
-
 function jz(operandsArray) {
   if (Z_flag.innerHTML == 1) jmp(operandsArray);
 }
-
 function jnz(operandsArray) {
   if (Z_flag.innerHTML == 0) jmp(operandsArray);
 }
-
 function jp(operandsArray) {
   if (P_flag.innerHTML == 1) jmp(operandsArray);
 }
-
 function call(operandsArray) {} //LDA 3423h
-
 function ldax(operandsArray) {
   let rp;
   switch (operandsArray[0]) {
@@ -501,7 +478,6 @@ function ldax(operandsArray) {
   const p3 = document.querySelector(`.me${dec}`);
   A.innerHTML = p3.textContent;
 }
-
 function stax(operandsArray) {
   let rp;
   switch (operandsArray[0]) {
@@ -615,7 +591,6 @@ function rar() {
   A.innerHTML = binaryToDecimal(resultBinary).toString(16).toUpperCase();
   Parity_Flag_check(A.innerHTML);
 }
-
 function hlt() {}
 
 function nop() {}
