@@ -101,6 +101,13 @@ function loadHelp() {
   const model = document.getElementById("model");
   model.classList.remove("hide");
 }
+function loadHelp() {
+  const model = document.getElementById("model");
+  model.classList.remove("hide");
+}
+function Github() {
+  window.open("https://github.com/rmrajesofficial/8085_Simulation", "_blank");
+}
 
 function resetAll() {
   window.location.reload();
