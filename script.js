@@ -1,4 +1,4 @@
-var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
+var editor = CodeMirror.fromTextArea($("editor"), {
   mode: "8085", // Set to the assembly language mode you've created
   theme: "dracula", // Choose your preferred theme
   lineNumbers: true, // Show line numbers
@@ -7,13 +7,15 @@ var editor = CodeMirror.fromTextArea(document.getElementById("editor"), {
   matchBrackets: true, // Highlight matching brackets
   autoCloseBrackets: true, // Automatically close brackets
 });
+
 let instruction = 0;
 let localCounter = 100;
 let labelMap = new Map();
 let instructionsArray = [];
 const Sdata = localStorage.getItem("code");
 if (Sdata !== null) editor.setValue(Sdata);
-document.getElementById("compile").addEventListener("click", function () {
+
+$("compile").addEventListener("click", function () {
   const start = localCounter;
   localStorage.setItem("code", editor.getValue());
   const assemblyCode = editor.getValue().split("\n");
@@ -39,21 +41,30 @@ document.getElementById("compile").addEventListener("click", function () {
     }
   }
   if (flag) {
-    document.getElementById("compile").classList.toggle("hide")
-    document.getElementById("run").classList.toggle("hide")
+    $("compile").classList.add("hide")
+    $("run").classList.remove("hide")
+    
 
   }
   console.log(instructionsArray);
   console.log(labelMap);
 });
-document.getElementById("run").addEventListener("click", function () {
+
+$("run").addEventListener("click", function () {
   const assemblyCode = editor.getValue().split("\n");
   while (instruction < assemblyCode.length) {
     const line = assemblyCode[instruction];
+    opcodeFetch(line)
     instruction++;
   }
-  document.getElementById("compile").classList.toggle("hide")
-  document.getElementById("run").classList.toggle("hide")
+  $("compile").classList.remove("hide")
+  $("run").classList.add("hide")
+});
+
+editor.on("change", function () {
+  $("run").classList.add("hide")
+  $("compile").classList.remove("hide")
+  console.log("Editor content has changed.");
 });
 
 function appendAddressElement(container, hexAddress, k) {
@@ -76,8 +87,9 @@ function appendAddressElement(container, hexAddress, k) {
   container.appendChild(div);
 }
 
-const container1 = document.getElementById("scroll_mem");
-const container2 = document.getElementById("scroll_io");
+const container1 = $("scroll_mem");
+const container2 = $("scroll_io");
+
 for (let i = 0; i < 4096; i++) {
   const hexAddress = i.toString(16).toUpperCase().padStart(4, "0");
   appendAddressElement(container1, hexAddress, "me");
@@ -89,18 +101,20 @@ for (let i = 0; i < 256; i++) {
 
 const close_model_button = document.querySelector(".close_model");
 close_model_button.addEventListener("click", () => {
-  const model = document.getElementById("model");
+  const model = $("model");
   model.classList.add("hide");
 });
 
 function loadHelp() {
-  const model = document.getElementById("model");
+  const model = $("model");
   model.classList.remove("hide");
 }
+
 function loadHelp() {
-  const model = document.getElementById("model");
+  const model = $("model");
   model.classList.remove("hide");
 }
+
 function Github() {
   window.open("https://github.com/rmrajesofficial/8085_Simulation", "_blank");
 }
