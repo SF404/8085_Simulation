@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="doc.css" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@10..48,300&family=Inconsolata:wght@300&family=Montserrat:ital@1&family=Poppins:wght@300&display=swap");
+    </style>
+  </head>
+  <body>
+    <div>
+      <h1>Welcome to the 8085 Microprocessor Simulator!</h1>
+      <p>
+        This Web-browser tool helps you to understand and experiment with the
+        Intel 8085 microprocessor, It's like a virtual playground where you can
+        experiment and discover how this old-school tech works.
+      </p>
+
+      <h2>Navigation Bar</h2>
+      <ul>
+        <li>
+          <strong>Reset All:</strong> Click this button to reset the simulator
+          to its initial state.
+        </li>
+        <li>
+          <strong>Help:</strong> Access helpful documentation or instructions.
+        </li>
+        <li><strong>Info:</strong> Obtain information about the simulator.</li>
+      </ul>
+
+      <h2>Internal Memory Panel</h2>
+      <p>
+        This section displays the internal registers and flags of the 8085
+        microprocessor:
+      </p>
+
+      <h3>Register Values</h3>
+      <ul>
+        <li><strong>A:</strong> Accumulator register.</li>
+        <li><strong>BC:</strong> B and C registers.</li>
+        <li><strong>DE:</strong> D and E registers.</li>
+        <li><strong>HL:</strong> H and L registers.</li>
+        <li><strong>PSW:</strong> Program Status Word.</li>
+        <li><strong>PC:</strong> Program Counter.</li>
+        <li><strong>SP:</strong> Stack Pointer.</li>
+        <li><strong>Int-Reg:</strong> Interrupt Register.</li>
+      </ul>
+
+      <h3>Flags</h3>
+      <ul>
+        <li><strong>S:</strong> Sign Flag.</li>
+        <li><strong>Z:</strong> Zero Flag.</li>
+        <li><strong>AC:</strong> Auxiliary Carry Flag.</li>
+        <li><strong>P:</strong> Parity Flag.</li>
+        <li><strong>C:</strong> Carry Flag.</li>
+      </ul>
+
+      <h2>Decimal - Hex Conversion</h2>
+      <p>Convert decimal to hexadecimal and vice versa.</p>
+      <p>
+        Enter values in the "Decimal" or "Hex" fields and use the corresponding
+        buttons to perform conversions.
+      </p>
+
+      <h2>Memory - IO Update</h2>
+      <p>
+        Select whether you want to work with "Memory" or "I/O Ports" using the
+        dropdown menu.
+      </p>
+      <p>
+        Enter the address and data values, then click "Update Value" to modify
+        memory or I/O content.
+      </p>
+
+      <h2>Code Editor</h2>
+      <p>The central part of the interface is the code editor.</p>
+      <p>You can write and edit 8085 assembly code here.</p>
+      <p>Control buttons include:</p>
+      <ul>
+        <li><strong>Run:</strong> Execute the code.</li>
+        <li><strong>Compile:</strong> Check the code for errors.</li>
+        <li>
+          <strong>Zoom In/Out:</strong> Adjust the font size in the code editor.
+        </li>
+      </ul>
+
+      <h2>External Memory Panel</h2>
+      <p>
+        This section allows you to view and manipulate memory and I/O ports.
+      </p>
+      <p>Toggle between "Memory" and "I/O Ports" using the buttons.</p>
+      <p>
+        The display shows address (hex), address (decimal), and data values.
+      </p>
+    </div>
+  </body>
+</html>
