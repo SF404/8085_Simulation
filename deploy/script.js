@@ -116,7 +116,7 @@ function loadHelp() {
 }
 
 function Github() {
-  window.open("https://github.com/rmrajesofficial/8085_Simulation", "_blank");
+  window.open("https://github.com/SF404/8085_Simulation", "_blank");
 }
 
 function resetAll() {
